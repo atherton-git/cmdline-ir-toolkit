@@ -20,12 +20,13 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
-	"EvtxECmd"
-	"SrumECmd"
-	"Hayabusa"
-	"DotNetRuntime"
-	"Java"
-	"Python"
+	#"EvtxECmd"
+	"PECmd"
+	#"SrumECmd"
+	#"Hayabusa"
+	#"DotNetRuntime"
+	#"Java"
+	#"Python"
 )
 
 # Define relative paths based on the script's directory
@@ -36,9 +37,9 @@ $output_dir  = Join-Path $scriptDir "_output"
 
 # Define files to remove after installation
 $filesToRemove = @(
-    "risk_assessment.docx",
-    "README.md",
-    "initialise.sh",
+	"risk_assessment.docx",
+	"README.md",
+	"initialise.sh",
 	".gitkeep"
 )
 
@@ -328,6 +329,26 @@ function Install-SrumECmd {
 }
 
 ###############################################################################
+# Function: Install-PECmd
+###############################################################################
+
+function Install-PECmd {
+    Write-Log "Installing PECmd..." -Level "Info"
+
+    $pecmd_url           = "https://download.ericzimmermanstools.com/net6/PECmd.zip"
+    $pecmd_path          = Join-Path $tmp_dir "PECmd.zip"
+    $pecmd_expected_hash = "42007057C50C07FA955BE8BF738901B2B2DAD0A94EDE8E03087C4D40B0F8B4B5"
+
+    Download-And-Extract -url $pecmd_url `
+                         -outpath $pecmd_path `
+                         -destination "$tmp_dir\PECmd" `
+                         -expectedHash $pecmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "PECmd\*") -Destination $toolpath\prefetch_explorer
+	Write-Log "PECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-Python
 ###############################################################################
 
@@ -479,6 +500,9 @@ foreach ($tool in $ToolInstallList) {
         }
         "SrumECmd" {
             Install-SrumECmd
+        }
+        "PECmd" {
+            Install-PECmd
         }
         "Hayabusa" {
             Install-Hayabusa
