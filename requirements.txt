@@ -1,0 +1,6 @@
+numpy
+libesedb-python
+pandas
+pyarrow
+pyboof
+tika
