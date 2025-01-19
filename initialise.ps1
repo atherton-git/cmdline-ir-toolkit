@@ -20,17 +20,18 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
-	"AmCacheParser"
-	"EvtxECmd"
-	"PECmd"
-	"JLECmd"
-	"LECmd"
-	"RECmd"
-	"SrumECmd"
-	"Hayabusa"
-	"DotNetRuntime"
-	"Java"
-	"Python"
+	#"AmCacheParser"
+	#"EvtxECmd"
+	#"PECmd"
+	#"JLECmd"
+	#"LECmd"
+	#"RECmd"
+	#"SrumECmd"
+	"SBECmd"
+	#"Hayabusa"
+	#"DotNetRuntime"
+	#"Java"
+	#"Python"
 )
 
 # Define relative paths based on the script's directory
@@ -433,6 +434,26 @@ function Install-JLECmd {
 }
 
 ###############################################################################
+# Function: Install-SBECmd
+###############################################################################
+
+function Install-SBECmd {
+    Write-Log "Installing SBECmd..." -Level "Info"
+
+    $sbecmd_url           = "https://download.ericzimmermanstools.com/net6/SBECmd.zip"
+    $sbecmd_path          = Join-Path $tmp_dir "SBECmd.zip"
+    $sbecmd_expected_hash = "5897B96A8A34719304D7C8B287CEB15A6CA50AB565D7E1028F61AE3095E8BFEB"
+
+    Download-And-Extract -url $sbecmd_url `
+                         -outpath $sbecmd_path `
+                         -destination "$tmp_dir\SBECmd" `
+                         -expectedHash $sbecmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "SBECmd\*") -Destination $toolpath\shellbags_explorer
+	Write-Log "SBECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-Python
 ###############################################################################
 
@@ -593,6 +614,9 @@ foreach ($tool in $ToolInstallList) {
         }
         "JLECmd" {
             Install-JLECmd
+        }
+        "SBECmd" {
+            Install-SBECmd
         }
         "LECmd" {
             Install-LECmd
