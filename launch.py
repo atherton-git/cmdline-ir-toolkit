@@ -114,13 +114,37 @@ def triage_hayabusa_winlogon():
     subprocess.run(["python", script_path])
 
 ########################################
+# AMCACHE FUNCTION: parse_amcache_files()
+########################################
+
+def parse_amcache_files():
+    """
+    Runs the Amcache Parser tool (via bin/dotnet-runtime-600/dotnet)
+    to parse the amcache database from _input into CSV at _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    amcache_dir = os.path.join(bin_dir, "amcache_explorer", "AmcacheParser.dll")
+    input_dir = os.path.join(script_dir, "_input", "Amcache.hve")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        amcache_dir,
+        "-f", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "EVTX files processed successfully, check _output for CSV results.")
+
+########################################
 # EVTX FUNCTION: parse_evtx_files()
 ########################################
 
 def parse_evtx_files():
     """
-    Runs the EvtxExplorer (EvtxECmd.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
-    to parse all .evtx logs from _input into CSV in _output.
+    Runs the EvtxExplorer (EvtxECmd.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse all .evtx logs from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     bin_dir = os.path.join(script_dir, "bin")
@@ -143,8 +167,8 @@ def parse_evtx_files():
 
 def parse_srum_files():
     """
-    Runs the Srum Explorer (SrumECmd.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
-    to parse SRUB.dat files from _input into CSV in _output.
+    Runs the Srum Explorer (SrumECmd.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse SRUB.dat files from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     bin_dir = os.path.join(script_dir, "bin")
@@ -167,8 +191,8 @@ def parse_srum_files():
 
 def parse_pecmd_files():
     """
-    Runs the Prefetch Explorer (PECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
-    to parse prefetch files from _input into CSV in _output.
+    Runs the Prefetch Explorer (PECmc.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse prefetch files from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     bin_dir = os.path.join(script_dir, "bin")
@@ -191,8 +215,8 @@ def parse_pecmd_files():
 
 def parse_lecmd_files():
     """
-    Runs the Prefetch Explorer (LECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
-    to parse prefetch files from _input into CSV in _output.
+    Runs the LnkFile Explorer (LECmc.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse lnk files from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     bin_dir = os.path.join(script_dir, "bin")
@@ -215,8 +239,8 @@ def parse_lecmd_files():
 
 def parse_jlecmd_files():
     """
-    Runs the Jumplist Explorer (JLECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
-    to parse jumplist files from _input into CSV in _output.
+    Runs the Jumplist Explorer (JLECmc.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse jumplist files from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     bin_dir = os.path.join(script_dir, "bin")
@@ -264,23 +288,24 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 		print(" 5) Encode	| Files to Base64")
 
 		# Parse
-		print(" 6) Parse	| EVTX files (EvtxECmd)")
-		print(" 7) Parse	| JumpList files (JLECmd)")
-		print(" 8) Parse	| Linux datetimes in logs")
-		print(" 9) Parse	| Lnk files (LECmd)")
-		print("10) Parse	| Prefetch files (PECmd)")
-		print("11) Parse	| Srum files (SrumECmd)")
-		print("12) Parse	| User Access Logging (KStrike)")
+		print(" 6) Parse	| AmCache file (Ez.AmcacheParser)")
+		print(" 7) Parse	| EVTX files (Ez.EvtxECmd)")
+		print(" 8) Parse	| JumpLists (Ez.JLECmd)")
+		print(" 9) Parse	| Linux datetimes in logs")
+		print("10) Parse	| Lnk files (Ez.LECmd)")
+		print("11) Parse	| Prefetch (Ez.PECmd)")
+		print("12) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
+		print("13) Parse	| SUM/UAL database (KStrike)")
 
 		# Search
-		print("13) Search	| Free-text")
-		print("14) Search	| IPv4")
-		print("15) Search	| Regex (input_regex.txt)")
-		print("16) Search	| Wordlist (input_wordlist.txt)")
+		print("14) Search	| Free-text")
+		print("15) Search	| IPv4")
+		print("16) Search	| Regex (input_regex.txt)")
+		print("17) Search	| Wordlist (input_wordlist.txt)")
 
 		# Triage
-		print("17) Triage	| EVTX (Hayabusa logon summary)")
-		print("18) Triage	| EVTX (Hayabusa timeline)")
+		print("18) Triage	| EVTX (Hayabusa logon summary)")
+		print("19) Triage	| EVTX (Hayabusa timeline)")
 
 		choice = input("\nEnter your choice: ").strip()
 
@@ -300,42 +325,45 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 			encode_base64_files()
 
 		elif choice == '6':
-			parse_evtx_files()
+			parse_amcache_files()
 
 		elif choice == '7':
-			parse_jlecmd_files()
+			parse_evtx_files()
 
 		elif choice == '8':
-			parse_linux_datatimes()
+			parse_jlecmd_files()
 
 		elif choice == '9':
-			parse_lecmd_files()
+			parse_linux_datatimes()
 
 		elif choice == '10':
-			parse_pecmd_files()
+			parse_lecmd_files()
 
 		elif choice == '11':
-			parse_srum_files()
+			parse_pecmd_files()
 
 		elif choice == '12':
-			parse_kstrike()
+			parse_srum_files()
 
 		elif choice == '13':
-			search_freesearch()
+			parse_kstrike()
 
 		elif choice == '14':
-			search_ipv4()
+			search_freesearch()
 
 		elif choice == '15':
-			search_regex()
+			search_ipv4()
 
 		elif choice == '16':
-			search_wordlist()
+			search_regex()
 
 		elif choice == '17':
-			triage_hayabusa_winlogon()
+			search_wordlist()
 
 		elif choice == '18':
+			triage_hayabusa_winlogon()
+
+		elif choice == '19':
 			triage_hayabusa_timeline()
 
 		else:
