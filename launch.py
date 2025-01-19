@@ -239,7 +239,7 @@ def parse_lecmd_files():
 
 def parse_jlecmd_files():
     """
-    Runs the Jumplist Explorer (JLECmc.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    Runs the Jumplist Explorer (JLECmd.dll) tool (via bin/dotnet-runtime-600/dotnet)
     to parse jumplist files from _input into CSV at _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -256,6 +256,30 @@ def parse_jlecmd_files():
     ]
 
     run_command(command, "Lnk files processed successfully, check _output for CSV results.")
+
+########################################
+# SHELLBAGS FUNCTION: parse_sbecmd_files()
+########################################
+
+def parse_sbecmd_files():
+    """
+    Runs the Shellbags Explorer (SBECmd.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse registry files from _input into CSV at _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    sbecmd_dir = os.path.join(bin_dir, "shellbags_explorer", "SBECmd.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        sbecmd_dir,
+        "-d", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "Registry files processed successfully, check _output for CSV results.")
 
 ########################################
 # MAIN MENU
@@ -294,18 +318,19 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 		print(" 9) Parse	| Linux datetimes in logs")
 		print("10) Parse	| Lnk files (Ez.LECmd)")
 		print("11) Parse	| Prefetch (Ez.PECmd)")
-		print("12) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
-		print("13) Parse	| SUM/UAL database (KStrike)")
+		print("12) Parse	| Shellbags (Ez.SBECmd)")
+		print("13) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
+		print("14) Parse	| SUM/UAL database (KStrike)")
 
 		# Search
-		print("14) Search	| Free-text")
-		print("15) Search	| IPv4")
-		print("16) Search	| Regex (input_regex.txt)")
-		print("17) Search	| Wordlist (input_wordlist.txt)")
+		print("15) Search	| Free-text")
+		print("16) Search	| IPv4")
+		print("17) Search	| Regex (input_regex.txt)")
+		print("18) Search	| Wordlist (input_wordlist.txt)")
 
 		# Triage
-		print("18) Triage	| EVTX (Hayabusa logon summary)")
-		print("19) Triage	| EVTX (Hayabusa timeline)")
+		print("19) Triage	| EVTX (Hayabusa logon summary)")
+		print("20) Triage	| EVTX (Hayabusa timeline)")
 
 		choice = input("\nEnter your choice: ").strip()
 
@@ -343,27 +368,30 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 			parse_pecmd_files()
 
 		elif choice == '12':
-			parse_srum_files()
+			parse_sbecmd_files()
 
 		elif choice == '13':
-			parse_kstrike()
+			parse_srum_files()
 
 		elif choice == '14':
-			search_freesearch()
+			parse_kstrike()
 
 		elif choice == '15':
-			search_ipv4()
+			search_freesearch()
 
 		elif choice == '16':
-			search_regex()
+			search_ipv4()
 
 		elif choice == '17':
-			search_wordlist()
+			search_regex()
 
 		elif choice == '18':
-			triage_hayabusa_winlogon()
+			search_wordlist()
 
 		elif choice == '19':
+			triage_hayabusa_winlogon()
+
+		elif choice == '20':
 			triage_hayabusa_timeline()
 
 		else:
