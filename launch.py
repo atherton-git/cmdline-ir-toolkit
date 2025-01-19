@@ -138,12 +138,12 @@ def parse_evtx_files():
     run_command(command, "EVTX files processed successfully, check _output for CSV results.")
 
 ########################################
-# EVTX FUNCTION: parse_srum_files()
+# SRUM FUNCTION: parse_srum_files()
 ########################################
 
 def parse_srum_files():
     """
-    Runs the Srum (SrumECmd.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
+    Runs the Srum Explorer (SrumECmd.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
     to parse SRUB.dat files from _input into CSV in _output.
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -161,101 +161,186 @@ def parse_srum_files():
 
     run_command(command, "EVTX files processed successfully, check _output for CSV results.")
 
+########################################
+# PREFETCH FUNCTION: parse_pecmd_files()
+########################################
+
+def parse_pecmd_files():
+    """
+    Runs the Prefetch Explorer (PECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
+    to parse prefetch files from _input into CSV in _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    pecmd_dir = os.path.join(bin_dir, "prefetch_explorer", "PECmd.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        pecmd_dir,
+        "-d", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "Prefetch files processed successfully, check _output for CSV results.")
+
+########################################
+# LNKFILE FUNCTION: parse_lecmd_files()
+########################################
+
+def parse_lecmd_files():
+    """
+    Runs the Prefetch Explorer (LECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
+    to parse prefetch files from _input into CSV in _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    lecmd_dir = os.path.join(bin_dir, "lnk_explorer", "LECmd.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        lecmd_dir,
+        "-d", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "Lnk files processed successfully, check _output for CSV results.")
+
+########################################
+# JUMPLIST FUNCTION: parse_jlecmd_files()
+########################################
+
+def parse_jlecmd_files():
+    """
+    Runs the Jumplist Explorer (JLECmc.dll) tool (under bin/dotnet-runtime-600/dotnet, etc.)
+    to parse jumplist files from _input into CSV in _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    jlecmd_dir = os.path.join(bin_dir, "jumplist_explorer", "JLECmd.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        jlecmd_dir,
+        "-d", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "Lnk files processed successfully, check _output for CSV results.")
 
 ########################################
 # MAIN MENU
 ########################################
 
 def main():
-    print(r"""
-                      _____                  _            __              ____   _ __ 
-  _________ ___  ____/ / (_)___  ___        (_)____      / /_____  ____  / / /__(_) /_
- / ___/ __ `__ \/ __  / / / __ \/ _ \______/ / ___/_____/ __/ __ \/ __ \/ / //_/ / __/
-/ /__/ / / / / / /_/ / / / / / /  __/_____/ / /  /_____/ /_/ /_/ / /_/ / / ,< / / /_  
-\___/_/ /_/ /_/\__,_/_/_/_/ /_/\___/     /_/_/         \__/\____/\____/_/_/|_/_/\__/  
+	print(r"""
+                       _____                  _            __              ____   _ __ 
+   _________ ___  ____/ / (_)___  ___        (_)____      / /_____  ____  / / /__(_) /_
+  / ___/ __ `__ \/ __  / / / __ \/ _ \______/ / ___/_____/ __/ __ \/ __ \/ / //_/ / __/
+ / /__/ / / / / / /_/ / / / / / /  __/_____/ / /  /_____/ /_/ /_/ / /_/ / / ,< / / /_  
+ \___/_/ /_/ /_/\__,_/_/_/_/ /_/\___/     /_/_/         \__/\____/\____/_/_/|_/_/\__/  
 
 Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input dir                                                                                      
-""")
-    while True:
-        print("\nMENU OPTIONS:")
-        # Quit
-        print(" 1) Quit")
+	""")
 
-        # Convert
-        print(" 2) Convert	| Documents to txt (Apache Tika)")
+	while True:
+		print("\nMENU OPTIONS:")
+		# Quit
+		print(" 1) Quit")
 
-        # Decode
-        print(" 3) Decode	| Base64 to files")
-        print(" 4) Decode	| QR codes (Linux only)")
+		# Convert
+		print(" 2) Convert	| Documents to txt (Apache Tika)")
 
-        # Encode
-        print(" 5) Encode	| Files to Base64")
+		# Decode
+		print(" 3) Decode	| Base64 to files")
+		print(" 4) Decode	| QR codes (Linux only)")
 
-        # Parse
-        print(" 6) Parse	| EVTX files (EvtxECmd)")
-        print(" 7) Parse	| User Access Logging (KStrike)")
-        print(" 8) Parse	| Linux datetimes in logs")
-        print(" 9) Parse	| Srum files (SrumECmd)")
+		# Encode
+		print(" 5) Encode	| Files to Base64")
 
-        # Search
-        print("10) Search	| Free-text")
-        print("11) Search	| IPv4")
-        print("12) Search	| Regex (input_regex.txt)")
-        print("13) Search	| Wordlist (input_wordlist.txt)")
+		# Parse
+		print(" 6) Parse	| EVTX files (EvtxECmd)")
+		print(" 7) Parse	| JumpList files (JLECmd)")
+		print(" 8) Parse	| Linux datetimes in logs")
+		print(" 9) Parse	| Lnk files (LECmd)")
+		print("10) Parse	| Prefetch files (PECmd)")
+		print("11) Parse	| Srum files (SrumECmd)")
+		print("12) Parse	| User Access Logging (KStrike)")
 
-        # Triage
-        print("14) Triage	| EVTX (Hayabusa timeline)")
-        print("15) Triage	| EVTX (Hayabusa logon summary)")
+		# Search
+		print("13) Search	| Free-text")
+		print("14) Search	| IPv4")
+		print("15) Search	| Regex (input_regex.txt)")
+		print("16) Search	| Wordlist (input_wordlist.txt)")
 
-        choice = input("\nEnter your choice: ").strip()
+		# Triage
+		print("17) Triage	| EVTX (Hayabusa logon summary)")
+		print("18) Triage	| EVTX (Hayabusa timeline)")
 
-        if choice == '1':
-            break
+		choice = input("\nEnter your choice: ").strip()
 
-        elif choice == '2':
-            extract_text_files()
+		if choice == '1':
+			break
 
-        elif choice == '3':
-            decode_base64_files()
+		elif choice == '2':
+			extract_text_files()
 
-        elif choice == '4':
-            decode_qr_codes()
+		elif choice == '3':
+			decode_base64_files()
 
-        elif choice == '5':
-            encode_base64_files()
+		elif choice == '4':
+			decode_qr_codes()
 
-        elif choice == '6':
-            parse_evtx_files()
+		elif choice == '5':
+			encode_base64_files()
 
-        elif choice == '7':
-            parse_kstrike()
+		elif choice == '6':
+			parse_evtx_files()
 
-        elif choice == '8':
-            parse_linux_datatimes()
+		elif choice == '7':
+			parse_jlecmd_files()
 
-        elif choice == '9':
-            parse_srum_files()
+		elif choice == '8':
+			parse_linux_datatimes()
 
-        elif choice == '10':
-            search_freesearch()
+		elif choice == '9':
+			parse_lecmd_files()
 
-        elif choice == '11':
-            search_ipv4()
+		elif choice == '10':
+			parse_pecmd_files()
 
-        elif choice == '12':
-            search_regex()
+		elif choice == '11':
+			parse_srum_files()
 
-        elif choice == '13':
-            search_wordlist()
+		elif choice == '12':
+			parse_kstrike()
 
-        elif choice == '14':
-            triage_hayabusa_timeline()
+		elif choice == '13':
+			search_freesearch()
 
-        elif choice == '15':
-            triage_hayabusa_winlogon()
+		elif choice == '14':
+			search_ipv4()
 
-        else:
-            print("Invalid choice. Please enter a valid option.")
+		elif choice == '15':
+			search_regex()
+
+		elif choice == '16':
+			search_wordlist()
+
+		elif choice == '17':
+			triage_hayabusa_winlogon()
+
+		elif choice == '18':
+			triage_hayabusa_timeline()
+
+		else:
+			print("Invalid choice. Please enter a valid option.")
+
 
 if __name__ == "__main__":
-    main()
+	main()
