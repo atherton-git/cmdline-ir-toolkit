@@ -20,13 +20,16 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
-	#"EvtxECmd"
+	"EvtxECmd"
 	"PECmd"
-	#"SrumECmd"
-	#"Hayabusa"
-	#"DotNetRuntime"
-	#"Java"
-	#"Python"
+	"JLECmd"
+	"LECmd"
+	"RECmd"
+	"SrumECmd"
+	"Hayabusa"
+	"DotNetRuntime"
+	"Java"
+	"Python"
 )
 
 # Define relative paths based on the script's directory
@@ -309,6 +312,26 @@ function Install-EvtxECmd {
 }
 
 ###############################################################################
+# Function: Install-RECmd
+###############################################################################
+
+function Install-RECmd {
+    Write-Log "Installing EvtxECmd..." -Level "Info"
+
+    $recmd_url           = "https://download.ericzimmermanstools.com/net6/RECmd.zip"
+    $recmd_path          = Join-Path $tmp_dir "RECmd.zip"
+    $recmd_expected_hash = "318EE17EDE7D5FFBCB59382C318C4CB09E1AB3341B4C5683779237EA56DAC27F"
+
+    Download-And-Extract -url $recmd_url `
+                         -outpath $recmd_path `
+                         -destination "$tmp_dir" `
+                         -expectedHash $recmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "RECmd\*") -Destination $toolpath\registry_explorer
+	Write-Log "RECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-SrumECmd
 ###############################################################################
 
@@ -346,6 +369,46 @@ function Install-PECmd {
 
     Move-Item -Path (Join-Path $tmp_dir "PECmd\*") -Destination $toolpath\prefetch_explorer
 	Write-Log "PECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
+# Function: Install-LECmd
+###############################################################################
+
+function Install-LECmd {
+    Write-Log "Installing LECmd..." -Level "Info"
+
+    $lecmd_url           = "https://download.ericzimmermanstools.com/net6/LECmd.zip"
+    $lecmd_path          = Join-Path $tmp_dir "LECmd.zip"
+    $lecmd_expected_hash = "9A7A145C172EB4F5FCF95F4377780003B3EE3CED5F851DE4BEFBEE6501D5EF08"
+
+    Download-And-Extract -url $lecmd_url `
+                         -outpath $lecmd_path `
+                         -destination "$tmp_dir\LECmd" `
+                         -expectedHash $lecmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "LECmd\*") -Destination $toolpath\lnk_explorer
+	Write-Log "LECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
+# Function: Install-JLECmd
+###############################################################################
+
+function Install-JLECmd {
+    Write-Log "Installing JLECmd..." -Level "Info"
+
+    $jlecmd_url           = "https://download.ericzimmermanstools.com/net6/JLECmd.zip"
+    $jlecmd_path          = Join-Path $tmp_dir "JLECmd.zip"
+    $jlecmd_expected_hash = "5897B96A8A34719304D7C8B287CEB15A6CA50AB565D7E1028F61AE3095E8BFEB"
+
+    Download-And-Extract -url $jlecmd_url `
+                         -outpath $jlecmd_path `
+                         -destination "$tmp_dir\JLECmd" `
+                         -expectedHash $lecmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "JLECmd\*") -Destination $toolpath\jumplist_explorer
+	Write-Log "JLECmd installation complete!" -Level "Info"
 }
 
 ###############################################################################
@@ -503,6 +566,15 @@ foreach ($tool in $ToolInstallList) {
         }
         "PECmd" {
             Install-PECmd
+        }
+        "JLECmd" {
+            Install-JLECmd
+        }
+        "LECmd" {
+            Install-LECmd
+        }
+        "RECmd" {
+            Install-RECmd
         }
         "Hayabusa" {
             Install-Hayabusa
