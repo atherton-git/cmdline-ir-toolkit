@@ -282,6 +282,30 @@ def parse_sbecmd_files():
     run_command(command, "Registry files processed successfully, check _output for CSV results.")
 
 ########################################
+# RLA FUNCTION: convert_registry_files
+########################################
+
+def convert_registry_files():
+    """
+    Runs the Registry Log Analysis (rla.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to clean registry files from _input into _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    rla_dir = os.path.join(bin_dir, "registry_log_analysis", "rla.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        rla_dir,
+        "-d", input_dir,
+        "--out", output_dir
+    ]
+
+    run_command(command, "Registry files processed successfully, check _output for CSV results.")
+
+########################################
 # MAIN MENU
 ########################################
 
@@ -303,34 +327,35 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 
 		# Convert
 		print(" 2) Convert	| Documents to txt (Apache Tika)")
+		print(" 3) Convert	| Dirty registry to clean registry (Ez.RLA)")
 
 		# Decode
-		print(" 3) Decode	| Base64 to files")
-		print(" 4) Decode	| QR codes (Linux only)")
+		print(" 4) Decode	| Base64 to files")
+		print(" 5) Decode	| QR codes (Linux only)")
 
 		# Encode
-		print(" 5) Encode	| Files to Base64")
+		print(" 6) Encode	| Files to Base64")
 
 		# Parse
-		print(" 6) Parse	| AmCache file (Ez.AmcacheParser)")
-		print(" 7) Parse	| EVTX files (Ez.EvtxECmd)")
-		print(" 8) Parse	| JumpLists (Ez.JLECmd)")
-		print(" 9) Parse	| Linux datetimes in logs")
-		print("10) Parse	| Lnk files (Ez.LECmd)")
-		print("11) Parse	| Prefetch (Ez.PECmd)")
-		print("12) Parse	| Shellbags (Ez.SBECmd)")
-		print("13) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
-		print("14) Parse	| SUM/UAL database (KStrike)")
+		print(" 7) Parse	| AmCache file (Ez.AmcacheParser)")
+		print(" 8) Parse	| EVTX files (Ez.EvtxECmd)")
+		print(" 9) Parse	| JumpLists (Ez.JLECmd)")
+		print("10) Parse	| Linux datetimes in logs")
+		print("11) Parse	| Lnk files (Ez.LECmd)")
+		print("12) Parse	| Prefetch (Ez.PECmd)")
+		print("13) Parse	| Shellbags (Ez.SBECmd)")
+		print("14) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
+		print("15) Parse	| SUM/UAL database (KStrike)")
 
 		# Search
-		print("15) Search	| Free-text")
-		print("16) Search	| IPv4")
-		print("17) Search	| Regex (input_regex.txt)")
-		print("18) Search	| Wordlist (input_wordlist.txt)")
+		print("16) Search	| Free-text")
+		print("17) Search	| IPv4")
+		print("18) Search	| Regex (input_regex.txt)")
+		print("19) Search	| Wordlist (input_wordlist.txt)")
 
 		# Triage
-		print("19) Triage	| EVTX (Hayabusa logon summary)")
-		print("20) Triage	| EVTX (Hayabusa timeline)")
+		print("20) Triage	| EVTX (Hayabusa logon summary)")
+		print("21) Triage	| EVTX (Hayabusa timeline)")
 
 		choice = input("\nEnter your choice: ").strip()
 
@@ -341,57 +366,60 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 			extract_text_files()
 
 		elif choice == '3':
-			decode_base64_files()
+			convert_registry_files()
 
 		elif choice == '4':
-			decode_qr_codes()
+			decode_base64_files()
 
 		elif choice == '5':
-			encode_base64_files()
+			decode_qr_codes()
 
 		elif choice == '6':
-			parse_amcache_files()
+			encode_base64_files()
 
 		elif choice == '7':
-			parse_evtx_files()
+			parse_amcache_files()
 
 		elif choice == '8':
-			parse_jlecmd_files()
+			parse_evtx_files()
 
 		elif choice == '9':
-			parse_linux_datatimes()
+			parse_jlecmd_files()
 
 		elif choice == '10':
-			parse_lecmd_files()
+			parse_linux_datatimes()
 
 		elif choice == '11':
-			parse_pecmd_files()
+			parse_lecmd_files()
 
 		elif choice == '12':
-			parse_sbecmd_files()
+			parse_pecmd_files()
 
 		elif choice == '13':
-			parse_srum_files()
+			parse_sbecmd_files()
 
 		elif choice == '14':
-			parse_kstrike()
+			parse_srum_files()
 
 		elif choice == '15':
-			search_freesearch()
+			parse_kstrike()
 
 		elif choice == '16':
-			search_ipv4()
+			search_freesearch()
 
 		elif choice == '17':
-			search_regex()
+			search_ipv4()
 
 		elif choice == '18':
-			search_wordlist()
+			search_regex()
 
 		elif choice == '19':
-			triage_hayabusa_winlogon()
+			search_wordlist()
 
 		elif choice == '20':
+			triage_hayabusa_winlogon()
+
+		elif choice == '21':
 			triage_hayabusa_timeline()
 
 		else:
