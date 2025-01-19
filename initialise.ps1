@@ -20,6 +20,7 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
+	"AmCacheParser"
 	"EvtxECmd"
 	"PECmd"
 	"JLECmd"
@@ -292,6 +293,26 @@ function Install-Hayabusa {
 }
 
 ###############################################################################
+# Function: Install-AmCacheParser
+###############################################################################
+
+function Install-AmCacheParser {
+    Write-Log "Installing AmCacheParser..." -Level "Info"
+
+    $amcachep_url           = "https://download.ericzimmermanstools.com/net6/AmCacheParser.zip"
+    $amcachep_path          = Join-Path $tmp_dir "AmCacheParser.zip"
+    $amcachep_expected_hash = "0E0214D3B8D17500946E445F3DEC92F9485D00F788316EAA5CA78EBB31C92D78"
+
+    Download-And-Extract -url $amcachep_url `
+                         -outpath $amcachep_path `
+                         -destination "$tmp_dir\AmCacheParser" `
+                         -expectedHash $amcachep_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "AmCacheParser\*") -Destination $toolpath\amcache_explorer
+	Write-Log "AmCacheParser installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-EvtxECmd
 ###############################################################################
 
@@ -558,6 +579,9 @@ Write-Log "`nStarting toolkit setup..." -Level "Info"
 # Install tools based on $ToolInstallList
 foreach ($tool in $ToolInstallList) {
     switch ($tool) {
+        "AmCacheParser" {
+            Install-AmCacheParser
+        }
         "EvtxECmd" {
             Install-EvtxECmd
         }
