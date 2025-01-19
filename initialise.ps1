@@ -20,18 +20,19 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
-	#"AmCacheParser"
-	#"EvtxECmd"
-	#"PECmd"
-	#"JLECmd"
-	#"LECmd"
-	#"RECmd"
-	#"SrumECmd"
+	"AmCacheParser"
+	"EvtxECmd"
+	"PECmd"
+	"JLECmd"
+	"LECmd"
+	"RECmd"
+	"SrumECmd"
 	"SBECmd"
-	#"Hayabusa"
-	#"DotNetRuntime"
-	#"Java"
-	#"Python"
+	"RLA"
+	"Hayabusa"
+	"DotNetRuntime"
+	"Java"
+	"Python"
 )
 
 # Define relative paths based on the script's directory
@@ -454,6 +455,26 @@ function Install-SBECmd {
 }
 
 ###############################################################################
+# Function: Install-RLA
+###############################################################################
+
+function Install-RLA {
+    Write-Log "Installing RLA..." -Level "Info"
+
+    $rla_url           = "https://download.ericzimmermanstools.com/net6/rla.zip"
+    $rla_path          = Join-Path $tmp_dir "rla.zip"
+    $rla_expected_hash = "0BC1BCB001C2C2A993B0766DC745D5EAB993D7A5E1A424BD8459679DF6F118B7"
+
+    Download-And-Extract -url $rla_url `
+                         -outpath $rla_path `
+                         -destination "$tmp_dir\rla" `
+                         -expectedHash $rla_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "rla\*") -Destination $toolpath\registry_log_analysis
+	Write-Log "RLA installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-Python
 ###############################################################################
 
@@ -623,6 +644,9 @@ foreach ($tool in $ToolInstallList) {
         }
         "RECmd" {
             Install-RECmd
+        }
+        "RLA" {
+            Install-RLA
         }
         "Hayabusa" {
             Install-Hayabusa
