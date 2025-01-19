@@ -294,12 +294,12 @@ def convert_registry_files():
     bin_dir = os.path.join(script_dir, "bin")
     dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
     rla_dir = os.path.join(bin_dir, "registry_log_analysis", "rla.dll")
-    input_dir = os.path.join(script_dir, "_input")
+    input_file = os.path.join(script_dir, "_input", input('Enter the filename of the primary registry hive, as appears on disk (e.g. admin_UsrClass.dat): '))
     output_dir = os.path.join(script_dir, "_output")
     command = [
         dotnet_dir,
         rla_dir,
-        "-d", input_dir,
+        "-f", input_file,
         "--out", output_dir
     ]
 
