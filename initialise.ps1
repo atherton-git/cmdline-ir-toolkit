@@ -463,7 +463,7 @@ function Install-RLA {
 
     $rla_url           = "https://download.ericzimmermanstools.com/net6/rla.zip"
     $rla_path          = Join-Path $tmp_dir "rla.zip"
-    $rla_expected_hash = "0BC1BCB001C2C2A993B0766DC745D5EAB993D7A5E1A424BD8459679DF6F118B7"
+    $rla_expected_hash = "77F4C50706EBF3778420FDA70A0B3DBEBCCD2CFBD302286F3B4407866A4DCBAF"
 
     Download-And-Extract -url $rla_url `
                          -outpath $rla_path `
