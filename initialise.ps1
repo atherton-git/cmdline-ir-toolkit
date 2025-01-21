@@ -21,6 +21,7 @@ $HashMismatchPolicy = "Warn"  # Options: "Strict", "Warn", or "Ask"
 # List of tools to install - comment out tools you do not want to install
 $ToolInstallList = @(
 	"AmCacheParser"
+	"ShimCacheParser"
 	"EvtxECmd"
 	"PECmd"
 	"JLECmd"
@@ -28,6 +29,7 @@ $ToolInstallList = @(
 	"RECmd"
 	"SrumECmd"
 	"SBECmd"
+	"SqlEcmd"
 	"RLA"
 	"Hayabusa"
 	"DotNetRuntime"
@@ -315,6 +317,26 @@ function Install-AmCacheParser {
 }
 
 ###############################################################################
+# Function: Install-ShimCacheParser
+###############################################################################
+
+function Install-ShimCacheParser {
+    Write-Log "Installing ShimCacheParser..." -Level "Info"
+
+    $shimcachep_url           = "https://download.ericzimmermanstools.com/net6/AppCompatCacheParser.zip"
+    $shimcachep_path          = Join-Path $tmp_dir "ShimCacheParser.zip"
+    $shimcachep_expected_hash = "08BE9F08CD2A4F0080FFB6AC336BDAA3FFD357EFAC632C2F6A1F5415A8C06A57"
+
+    Download-And-Extract -url $shimcachep_url `
+                         -outpath $shimcachep_path `
+                         -destination "$tmp_dir\ShimCacheParser" `
+                         -expectedHash $shimcachep_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "ShimCacheParser\*") -Destination $toolpath\shimcache_parser
+	Write-Log "ShimCacheParser installation complete!" -Level "Info"
+}
+
+###############################################################################
 # Function: Install-EvtxECmd
 ###############################################################################
 
@@ -332,6 +354,26 @@ function Install-EvtxECmd {
 
     Move-Item -Path (Join-Path $tmp_dir "EvtxECmd\*") -Destination $toolpath\evtx_explorer
 	Write-Log "EvtxECmd installation complete!" -Level "Info"
+}
+
+###############################################################################
+# Function: Install-SqlECmd
+###############################################################################
+
+function Install-SqlECmd {
+    Write-Log "Installing SqlECmd..." -Level "Info"
+
+    $sqlecmd_url           = "https://download.ericzimmermanstools.com/net6/SqlECmd.zip"
+    $sqlecmd_path          = Join-Path $tmp_dir "SqlECmd.zip"
+    $sqlecmd_expected_hash = "F01A20187EAD06D4B187D79710341164F25FD8C171BCA6EF3045A60166B25313"
+
+    Download-And-Extract -url $sqlecmd_url `
+                         -outpath $sqlecmd_path `
+                         -destination "$tmp_dir" `
+                         -expectedHash $sqlecmd_expected_hash
+
+    Move-Item -Path (Join-Path $tmp_dir "SqlECmd\*") -Destination $toolpath\sql_explorer
+	Write-Log "SqlECmd installation complete!" -Level "Info"
 }
 
 ###############################################################################
@@ -443,7 +485,7 @@ function Install-SBECmd {
 
     $sbecmd_url           = "https://download.ericzimmermanstools.com/net6/SBECmd.zip"
     $sbecmd_path          = Join-Path $tmp_dir "SBECmd.zip"
-    $sbecmd_expected_hash = "5897B96A8A34719304D7C8B287CEB15A6CA50AB565D7E1028F61AE3095E8BFEB"
+    $sbecmd_expected_hash = "769C0C3548EFA70F81748918A7CEF017F106438E9FA516E1415450CE6310F451"
 
     Download-And-Extract -url $sbecmd_url `
                          -outpath $sbecmd_path `
@@ -624,11 +666,17 @@ foreach ($tool in $ToolInstallList) {
         "AmCacheParser" {
             Install-AmCacheParser
         }
+        "ShimCacheParser" {
+            Install-ShimCacheParser
+        }
         "EvtxECmd" {
             Install-EvtxECmd
         }
         "SrumECmd" {
             Install-SrumECmd
+        }
+        "SqlECmd" {
+            Install-SqlECmd
         }
         "PECmd" {
             Install-PECmd
