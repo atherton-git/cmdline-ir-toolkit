@@ -294,12 +294,12 @@ def convert_registry_files():
     bin_dir = os.path.join(script_dir, "bin")
     dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
     rla_dir = os.path.join(bin_dir, "registry_log_analysis", "rla.dll")
-    input_file = os.path.join(script_dir, "_input", input('Enter the filename of the primary registry hive, as appears on disk (e.g. admin_UsrClass.dat): '))
+    input_dir = os.path.join(script_dir, "_input")
     output_dir = os.path.join(script_dir, "_output")
     command = [
         dotnet_dir,
         rla_dir,
-        "-f", input_file,
+        "-d", input_dir,
         "--out", output_dir
     ]
 
@@ -317,108 +317,102 @@ def main():
  / /__/ / / / / / /_/ / / / / / /  __/_____/ / /  /_____/ /_/ /_/ / /_/ / / ,< / / /_  
  \___/_/ /_/ /_/\__,_/_/_/_/ /_/\___/     /_/_/         \__/\____/\____/_/_/|_/_/\__/  
 
-Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input dir                                                                                      
+Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input dir
 	""")
 
 	while True:
 		print("\nMENU OPTIONS:")
-		# Quit
+
+		# -- Quit at the top --
 		print(" 1) Quit")
 
-		# Convert
-		print(" 2) Convert	| Documents to txt (Apache Tika)")
-		print(" 3) Convert	| Dirty registry to clean registry (Ez.RLA)")
+		# -- Convert --
+		print(" 2) Convert    | ApacheTika.Doc Conversion  | {*.pdf, *.xlsx, *.docx, etc}")
+		print(" 3) Convert    | Ez.RLA.Registry Replay     | {SYSTEM*, NTUSER*, etc}")
 
-		# Decode
-		print(" 4) Decode	| Base64 to files")
-		print(" 5) Decode	| QR codes (Linux only)")
+		# -- Decode --
+		print(" 4) Decode     | Base64.To Files            | {*.b64}")
+		print(" 5) Decode     | QR codes                   | {*.png, *.jpeg, *.jpg}")
 
-		# Encode
-		print(" 6) Encode	| Files to Base64")
+		# -- Encode --
+		print(" 6) Encode     | Base64.From Files          | {*.txt, *.sh, *.ps1, etc}")
 
-		# Parse
-		print(" 7) Parse	| AmCache file (Ez.AmcacheParser)")
-		print(" 8) Parse	| EVTX files (Ez.EvtxECmd)")
-		print(" 9) Parse	| JumpLists (Ez.JLECmd)")
-		print("10) Parse	| Linux datetimes in logs")
-		print("11) Parse	| Lnk files (Ez.LECmd)")
-		print("12) Parse	| Prefetch (Ez.PECmd)")
-		print("13) Parse	| Shellbags (Ez.SBECmd)")
-		print("14) Parse	| SRUM/SRUDB database (Ez.SrumECmd)")
-		print("15) Parse	| SUM/UAL database (KStrike)")
+		# -- Parse --
+		print(" 7) Parse      | Ez.AmcacheParser           | {Amcache.hve}")
+		print(" 8) Parse      | Ez.EvtxECmd.EventLog       | {*.evtx}")
+		print(" 9) Parse      | Ez.JLECmd.JumpLists        | {*.*Destinations-ms}")
+		print("10) Parse      | Ez.LECmd.Lnk files         | {*.lnk}")
+		print("11) Parse      | Ez.PECmd.Prefetch          | {*.pf}")
+		print("12) Parse      | Ez.SBECmd.Shellbags        | {UsrClass.dat, Ntuser.dat}")
+		print("13) Parse      | Ez.SrumECmd.SRUM           | {SRUDB.dat}")
+		print("14) Parse      | KStrike.User Access Logs   | {Current.mdb}")
+		print("15) Parse      | Linux datetimes in logs    | {*.log}")
 
-		# Search
-		print("16) Search	| Free-text")
-		print("17) Search	| IPv4")
-		print("18) Search	| Regex (input_regex.txt)")
-		print("19) Search	| Wordlist (input_wordlist.txt)")
+		# -- Search --
+		print("16) Search     | Free-text                  | {*.csv, *.txt, etc}")
+		print("17) Search     | IPv4                       | {*.csv, *.txt, etc}")
+		print("18) Search     | Regex                      | {input_regex.txt}")
+		print("19) Search     | Wordlist                   | {input_wordlist.txt}")
 
-		# Triage
-		print("20) Triage	| EVTX (Hayabusa logon summary)")
-		print("21) Triage	| EVTX (Hayabusa timeline)")
+		# -- Triage --
+		print("20) Triage     | Hayabusa.Logons            | {*.evtx}")
+		print("21) Triage     | Hayabusa.Timeline          | {*.evtx}")
 
 		choice = input("\nEnter your choice: ").strip()
 
+		# Quit
 		if choice == '1':
 			break
 
+		# Convert
 		elif choice == '2':
 			extract_text_files()
-
 		elif choice == '3':
 			convert_registry_files()
 
+		# Decode
 		elif choice == '4':
 			decode_base64_files()
-
 		elif choice == '5':
 			decode_qr_codes()
 
+		# Encode
 		elif choice == '6':
 			encode_base64_files()
 
+		# Parse
 		elif choice == '7':
 			parse_amcache_files()
-
 		elif choice == '8':
 			parse_evtx_files()
-
 		elif choice == '9':
 			parse_jlecmd_files()
-
 		elif choice == '10':
+			parse_lecmd_files()
+		elif choice == '11':
+			parse_pecmd_files()
+		elif choice == '12':
+			parse_sbecmd_files()
+		elif choice == '13':
+			parse_srum_files()
+		elif choice == '14':
+			parse_kstrike()
+		elif choice == '15':
 			parse_linux_datatimes()
 
-		elif choice == '11':
-			parse_lecmd_files()
-
-		elif choice == '12':
-			parse_pecmd_files()
-
-		elif choice == '13':
-			parse_sbecmd_files()
-
-		elif choice == '14':
-			parse_srum_files()
-
-		elif choice == '15':
-			parse_kstrike()
-
+		# Search
 		elif choice == '16':
 			search_freesearch()
-
 		elif choice == '17':
 			search_ipv4()
-
 		elif choice == '18':
 			search_regex()
-
 		elif choice == '19':
 			search_wordlist()
 
+		# Triage
 		elif choice == '20':
 			triage_hayabusa_winlogon()
-
 		elif choice == '21':
 			triage_hayabusa_timeline()
 
