@@ -114,7 +114,7 @@ def triage_hayabusa_winlogon():
     subprocess.run(["python", script_path])
 
 ########################################
-# AMCACHE FUNCTION: parse_amcache_files()
+# AMCACHE FUNCTION: parse_amcache_files
 ########################################
 
 def parse_amcache_files():
@@ -135,10 +135,34 @@ def parse_amcache_files():
         "--csv", output_dir
     ]
 
-    run_command(command, "EVTX files processed successfully, check _output for CSV results.")
+    run_command(command, "AmCache.hve file processed successfully, check _output for CSV results.")
 
 ########################################
-# EVTX FUNCTION: parse_evtx_files()
+# SHIMCACHE FUNCTION: parse_shimcache_files
+########################################
+
+def parse_shimcache_files():
+    """
+    Runs the ShimCache Parser tool (via bin/dotnet-runtime-600/dotnet)
+    to parse the shimcache registry hive from _input into CSV at _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    shimcache_dir = os.path.join(bin_dir, "shimcache_parser", "AppCompatCacheParser.dll")
+    input_file = os.path.join(script_dir, "_input", "SYSTEM")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        shimcache_dir,
+        "-f", input_file,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "SYSTEM registry processed successfully, check _output for CSV results.")
+
+########################################
+# EVTX FUNCTION: parse_evtx_files
 ########################################
 
 def parse_evtx_files():
@@ -162,7 +186,7 @@ def parse_evtx_files():
     run_command(command, "EVTX files processed successfully, check _output for CSV results.")
 
 ########################################
-# SRUM FUNCTION: parse_srum_files()
+# SRUM FUNCTION: parse_srum_files
 ########################################
 
 def parse_srum_files():
@@ -183,10 +207,10 @@ def parse_srum_files():
         "--csv", output_dir
     ]
 
-    run_command(command, "EVTX files processed successfully, check _output for CSV results.")
+    run_command(command, "SRUM files processed successfully, check _output for CSV results.")
 
 ########################################
-# PREFETCH FUNCTION: parse_pecmd_files()
+# PREFETCH FUNCTION: parse_pecmd_files
 ########################################
 
 def parse_pecmd_files():
@@ -210,7 +234,7 @@ def parse_pecmd_files():
     run_command(command, "Prefetch files processed successfully, check _output for CSV results.")
 
 ########################################
-# LNKFILE FUNCTION: parse_lecmd_files()
+# LNKFILE FUNCTION: parse_lecmd_files
 ########################################
 
 def parse_lecmd_files():
@@ -234,7 +258,7 @@ def parse_lecmd_files():
     run_command(command, "Lnk files processed successfully, check _output for CSV results.")
 
 ########################################
-# JUMPLIST FUNCTION: parse_jlecmd_files()
+# JUMPLIST FUNCTION: parse_jlecmd_files
 ########################################
 
 def parse_jlecmd_files():
@@ -255,10 +279,10 @@ def parse_jlecmd_files():
         "--csv", output_dir
     ]
 
-    run_command(command, "Lnk files processed successfully, check _output for CSV results.")
+    run_command(command, "Jumplist files processed successfully, check _output for CSV results.")
 
 ########################################
-# SHELLBAGS FUNCTION: parse_sbecmd_files()
+# SHELLBAGS FUNCTION: parse_sbecmd_files
 ########################################
 
 def parse_sbecmd_files():
@@ -280,6 +304,30 @@ def parse_sbecmd_files():
     ]
 
     run_command(command, "Registry files processed successfully, check _output for CSV results.")
+
+########################################
+# SQLECMD FUNCTION: parse_sqlecmd_files
+########################################
+
+def parse_sqlecmd_files():
+    """
+    Runs the Shellbags Explorer (SQLECmd.dll) tool (via bin/dotnet-runtime-600/dotnet)
+    to parse registry files from _input into CSV at _output.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bin_dir = os.path.join(script_dir, "bin")
+    dotnet_dir = os.path.join(bin_dir, "dotnet-runtime-600", "dotnet")
+    sqlecmd_dir = os.path.join(bin_dir, "sql_explorer", "SQLECmd.dll")
+    input_dir = os.path.join(script_dir, "_input")
+    output_dir = os.path.join(script_dir, "_output")
+    command = [
+        dotnet_dir,
+        sqlecmd_dir,
+        "-d", input_dir,
+        "--csv", output_dir
+    ]
+
+    run_command(command, "SQL files processed successfully, check _output for CSV results.")
 
 ########################################
 # RLA FUNCTION: convert_registry_files
@@ -339,24 +387,26 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 
 		# -- Parse --
 		print(" 7) Parse      | Ez.AmcacheParser           | {Amcache.hve}")
-		print(" 8) Parse      | Ez.EvtxECmd.EventLog       | {*.evtx}")
-		print(" 9) Parse      | Ez.JLECmd.JumpLists        | {*.*Destinations-ms}")
-		print("10) Parse      | Ez.LECmd.Lnk files         | {*.lnk}")
-		print("11) Parse      | Ez.PECmd.Prefetch          | {*.pf}")
-		print("12) Parse      | Ez.SBECmd.Shellbags        | {UsrClass.dat, Ntuser.dat}")
-		print("13) Parse      | Ez.SrumECmd.SRUM           | {SRUDB.dat}")
-		print("14) Parse      | KStrike.User Access Logs   | {Current.mdb}")
-		print("15) Parse      | Linux datetimes in logs    | {*.log}")
+		print(" 8) Parse      | Ez.AppCompatCach/Shim      | {SYSTEM*}")
+		print(" 9) Parse      | Ez.EvtxECmd.EventLog       | {*.evtx}")
+		print("10) Parse      | Ez.JLECmd.JumpLists        | {*.*Destinations-ms}")
+		print("11) Parse      | Ez.LECmd.Lnk files         | {*.lnk}")
+		print("12) Parse      | Ez.PECmd.Prefetch          | {*.pf}")
+		print("13) Parse      | Ez.SBECmd.Shellbags        | {UsrClass.dat, Ntuser.dat}")
+		print("14) Parse      | Ez.SrumECmd.SRUM           | {SRUDB.dat}")
+		print("15) Parse      | Ez.SqlECmd.SQLite          | {*.sqlite3, History}")
+		print("16) Parse      | KStrike.User Access Logs   | {Current.mdb}")
+		print("17) Parse      | Linux datetimes in logs    | {*.log}")
 
 		# -- Search --
-		print("16) Search     | Free-text                  | {*.csv, *.txt, etc}")
-		print("17) Search     | IPv4                       | {*.csv, *.txt, etc}")
-		print("18) Search     | Regex                      | {input_regex.txt}")
-		print("19) Search     | Wordlist                   | {input_wordlist.txt}")
+		print("18) Search     | Free-text                  | {*.csv, *.txt, etc}")
+		print("19) Search     | IPv4                       | {*.csv, *.txt, etc}")
+		print("20) Search     | Regex                      | {input_regex.txt}")
+		print("21) Search     | Wordlist                   | {input_wordlist.txt}")
 
 		# -- Triage --
-		print("20) Triage     | Hayabusa.Logons            | {*.evtx}")
-		print("21) Triage     | Hayabusa.Timeline          | {*.evtx}")
+		print("22) Triage     | Hayabusa.Logons            | {*.evtx}")
+		print("23) Triage     | Hayabusa.Timeline          | {*.evtx}")
 
 		choice = input("\nEnter your choice: ").strip()
 
@@ -384,36 +434,40 @@ Note: Input files (.evtx, .log, .mdb, etc) need to be placed within the _input d
 		elif choice == '7':
 			parse_amcache_files()
 		elif choice == '8':
-			parse_evtx_files()
+			parse_shimcache_files()
 		elif choice == '9':
-			parse_jlecmd_files()
+			parse_evtx_files()
 		elif choice == '10':
-			parse_lecmd_files()
+			parse_jlecmd_files()
 		elif choice == '11':
-			parse_pecmd_files()
+			parse_lecmd_files()
 		elif choice == '12':
-			parse_sbecmd_files()
+			parse_pecmd_files()
 		elif choice == '13':
-			parse_srum_files()
+			parse_sbecmd_files()
 		elif choice == '14':
-			parse_kstrike()
+			parse_srum_files()
 		elif choice == '15':
+			parse_sqlecmd_files()
+		elif choice == '16':
+			parse_kstrike()
+		elif choice == '17':
 			parse_linux_datatimes()
 
 		# Search
-		elif choice == '16':
-			search_freesearch()
-		elif choice == '17':
-			search_ipv4()
 		elif choice == '18':
-			search_regex()
+			search_freesearch()
 		elif choice == '19':
+			search_ipv4()
+		elif choice == '20':
+			search_regex()
+		elif choice == '21':
 			search_wordlist()
 
 		# Triage
-		elif choice == '20':
+		elif choice == '22':
 			triage_hayabusa_winlogon()
-		elif choice == '21':
+		elif choice == '23':
 			triage_hayabusa_timeline()
 
 		else:
